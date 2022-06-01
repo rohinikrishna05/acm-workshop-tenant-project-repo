@@ -1,0 +1,29 @@
+apiVersion: gkehub.cnrm.cloud.google.com/v1beta1
+kind: GKEHubFeatureMembership
+metadata:
+  name: gke-acm-membership
+  namespace: acm-workshop-341-tenant
+  annotations:
+    config.kubernetes.io/depends-on: gkehub.cnrm.cloud.google.com/namespaces/acm-workshop-341-tenant/GKEHubMembership/gke,gkehub.cnrm.cloud.google.com/namespaces/acm-workshop-341-tenant/GKEHubFeature/configmanagement
+spec:
+  projectRef:
+    external: acm-workshop-341-tenant
+  location: global
+  membershipRef:
+    name: gke
+  featureRef:
+    name: configmanagement
+  configmanagement:
+    configSync:
+      sourceFormat: unstructured
+      git:
+        policyDir: .
+        secretType: none
+        syncBranch: main
+        syncRepo: https://github.com/rohinikrishna05/acm-workshop-gke-configs-repo
+    policyController:
+      enabled: true
+      referentialRulesEnabled: true
+      logDeniesEnabled: true
+      templateLibraryInstalled: true
+    version: "1.11.2"
