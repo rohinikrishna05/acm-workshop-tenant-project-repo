@@ -1,0 +1,48 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeSecurityPolicy
+metadata:
+  name: gke-asm-ingressgateway
+  namespace: acm-workshop-341-tenant
+spec:
+  adaptiveProtectionConfig:
+    layer7DdosDefenseConfig:
+      enable: true
+  rule:
+  - action: allow
+    description: "Default rule"
+    match:
+      versionedExpr: SRC_IPS_V1
+      config:
+        srcIpRanges:
+        - "*"
+    priority: 2147483647
+  - action: deny(403)
+    description: "XSS"
+    match:
+      expr:
+        expression: "evaluatePreconfiguredExpr('xss-stable')"
+    priority: 1000
+  - action: deny(403)
+    description: "SQL injection levels 1 and 2"
+    match:
+      expr:
+        expression: "evaluatePreconfiguredExpr('sqli-stable', ['owasp-crs-v030001-id942251-sqli', 'owasp-crs-v030001-id942420-sqli', 'owasp-crs-v030001-id942431-sqli', 'owasp-crs-v030001-id942460-sqli', 'owasp-crs-v030001-id942421-sqli', 'owasp-crs-v030001-id942432-sqli'])"
+    priority: 2000
+  - action: deny(403)
+    description: "Local file inclusion"
+    match:
+      expr:
+        expression: "evaluatePreconfiguredExpr('lfi-stable')"
+    priority: 3000
+  - action: deny(403)
+    description: "Remote file inclusion"
+    match:
+      expr:
+        expression: "evaluatePreconfiguredExpr('rfi-stable')"
+    priority: 4000
+  - action: deny(403)
+    description: "CVE-2021-44228 and CVE-2021-45046"
+    match:
+      expr:
+        expression: "evaluatePreconfiguredExpr('cve-canary')"
+    priority: 12345

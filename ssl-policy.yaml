@@ -1,0 +1,8 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeSSLPolicy
+metadata:
+  name: gke-asm-ingressgateway
+  namespace: acm-workshop-341-tenant
+spec:
+  minTlsVersion: TLS_1_0
+  profile: COMPATIBLE
