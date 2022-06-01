@@ -1,0 +1,49 @@
+apiVersion: container.cnrm.cloud.google.com/v1beta1
+kind: ContainerCluster
+metadata:
+  name: gke
+  namespace: acm-workshop-341-tenant
+  annotations:
+    cnrm.cloud.google.com/remove-default-node-pool: "true"
+    config.kubernetes.io/depends-on: compute.cnrm.cloud.google.com/namespaces/acm-workshop-341-tenant/ComputeSubnetwork/gke
+  labels:
+    mesh_id: proj-28398828172
+spec:
+  addonsConfig:
+    dnsCacheConfig:
+      enabled: true
+    gcePersistentDiskCsiDriverConfig:
+      enabled: true
+    httpLoadBalancing:
+      disabled: false
+  confidentialNodes:
+    enabled: true
+  datapathProvider: ADVANCED_DATAPATH
+  enableShieldedNodes: true
+  initialNodeCount: 1
+  ipAllocationPolicy:
+    servicesSecondaryRangeName: servicesrange
+    clusterSecondaryRangeName: clusterrange
+  location: us-east4
+  loggingConfig:
+    enableComponents:
+      - "SYSTEM_COMPONENTS"
+      - "WORKLOADS"
+  monitoringConfig:
+    enableComponents:
+      - "SYSTEM_COMPONENTS"
+  networkingMode: VPC_NATIVE
+  networkRef:
+    name: gke
+  nodeConfig:
+    machineType: n2d-standard-4
+  privateClusterConfig:
+    enablePrivateEndpoint: false
+    enablePrivateNodes: true
+    masterIpv4CidrBlock: 172.16.0.0/28
+  releaseChannel:
+    channel: RAPID
+  subnetworkRef:
+    name: gke
+  workloadIdentityConfig:
+    workloadPool: acm-workshop-341-tenant.svc.id.goog
